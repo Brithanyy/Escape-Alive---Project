@@ -1,0 +1,134 @@
+# depslib dependency file v1.0
+1700344543 source:c:\users\brisa ortiz\onedrive\escritorio\escape alive\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1697756362 c:\users\brisa ortiz\onedrive\escritorio\escape alive\debug.h
+	"debug.c"
+
+1697830114 c:\users\brisa ortiz\onedrive\escritorio\escape alive\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700595818 source:c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\escape alive\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1697756364 c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\escape alive\debug.h
+	"debug.c"
+
+1697830116 c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\escape alive\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700628780 source:c:\users\usuario\desktop\scape alive\escape alive\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700601243 c:\users\usuario\desktop\scape alive\escape alive\debug.h
+	"debug.c"
+
+1700601243 c:\users\usuario\desktop\scape alive\escape alive\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700667427 source:c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700652465 c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\debug.h
+	"debug.c"
+
+1700652465 c:\users\brisa ortiz\onedrive\escritorio\escape alive actualizado\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700676211 source:c:\users\usuario\desktop\scape alive actualizado 12.55hs\escape alive actualizado\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700668911 c:\users\usuario\desktop\scape alive actualizado 12.55hs\escape alive actualizado\debug.h
+	"debug.c"
+
+1700668911 c:\users\usuario\desktop\scape alive actualizado 12.55hs\escape alive actualizado\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700699368 source:c:\users\usuario\desktop\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700668912 c:\users\usuario\desktop\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\debug.h
+	"debug.c"
+
+1700697245 c:\users\usuario\desktop\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700751284 source:c:\users\olmos\desktop\escape alive active\scape alive 23.08\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\main.c
+	<stdlib.h>
+	<stdio.h>
+	"malloc.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+
+1700668912 c:\users\olmos\desktop\escape alive active\scape alive 23.08\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\debug.h
+	"debug.c"
+
+1700697246 c:\users\olmos\desktop\escape alive active\scape alive 23.08\scape alive actualizado\scape alive actualizado 12.55hs\escape alive actualizado\debug.c
+	"stdlib.h"
+	"raylib.h"
+	<math.h>
+	<string.h>
+	"debug.h"
+

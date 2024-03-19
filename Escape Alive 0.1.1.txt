@@ -1,0 +1,282 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "malloc.h"
+#include "raylib.h"
+#include <math.h>
+#include <string.h>
+#include "debug.h"
+
+///DEFICINIONES
+#define DIM 30
+#define SCREENWIDTH 1920
+#define SCREENHEIGHT 1080
+
+///ESTRUCTURAS
+typedef struct stSonidos {
+    Sound musica;
+    Sound efectos[DIM];
+} stSonidos;
+
+typedef struct stFlag {
+    char nombre[DIM];
+    int identificadorFlag; ///si el identificador del flag coincide con el identificador del evento, se activa el evento
+    int activo;
+} stFlag; ///a implementar
+
+typedef struct stJugador {
+    stFlag flags[DIM]; //booleanos relacionados a eventos
+    int temporizador; //tiempo maximo para completar el juego
+    int escenario; //numero de escenario o subescenario (state machine)
+} stJugador;
+
+typedef struct stObjeto {
+    Texture2D sprite[DIM];
+    Rectangle hitbox; //el hitbox contiene la posicion
+    int existe;
+} stObjeto;
+
+typedef struct stEvento {
+    int activo; /// existe 0 o 1
+    int identificadorEvento; ///flag que se va a manipular dentro del evento
+    int indiceFlag; ///indice de nodo de los objetos fijo para buscar
+    char texto[DIM*10];
+} stEvento; ///camino dentro del arbol
+
+typedef struct stNodo {
+    stEvento evento;
+    struct stNodo *anterior;
+    struct stNodo *siguiente;
+} stNodo;
+
+typedef struct stFila {
+    stNodo *primero;
+    stNodo *ultimo;
+} stFila;
+
+typedef struct stArbol {
+    stFila fila;
+    struct stArbol *izquierda;
+    struct stArbol *derecha;
+} stArbol;
+
+typedef struct stEscenario {
+    Texture2D fondoEstatico;
+    stArbol arbolDelEscenario;
+    stObjeto objetos[DIM];
+} stEscenario;
+
+///VARIABLES GLOBALES
+int i, j, k;
+
+///STATE MACHINE
+///0: Menu
+///1: Habitacion
+///2: Cocina
+///3: Patio
+///4: Pausa
+///5: Save
+///6: Score
+///7: Creditos
+
+///MAIN
+int main() {
+    srand(time(NULL));
+    stSonidos sonidos;
+    stJugador player;
+    stEscenario escenario[3];
+
+    Debug herramientaDebug;
+
+    inicializaciones(&sonidos, &player, escenario, &herramientaDebug);
+    //-------------------------------------------------------------------------------------
+    //BUCLE PRINCIPAL
+    //-------------------------------------------------------------------------------------
+    while( !WindowShouldClose() ) {
+        actualizar(escenario, &herramientaDebug);
+        dibujar(escenario, &herramientaDebug);
+    }
+    //-------------------------------------------------------------------------------------
+    //DE-INICIALIZACION
+    //-------------------------------------------------------------------------------------
+    deinicializaciones();
+    return 0;
+}
+
+///FUNCIONES
+///INICIALIZACIONES
+void inicializaciones(stSonidos *sonidos, stJugador *player, stEscenario *escenario, Debug *herramientaDebug) {
+    InitWindow(SCREENWIDTH, SCREENHEIGHT, "Escape Alive");
+    SetTargetFPS(60);
+    InitAudioDevice();
+    inicializarSonidos(sonidos);
+    inicializarJugador(player);
+    inicializarEscenario(escenario);
+
+    inicializarDebug(herramientaDebug);
+
+}
+void inicializarSonidos(stSonidos *sonidos) {
+    //sonidos->musica = loadSoundRaylib();
+    //sonidos->efectos[DIM] = loadEffectRaylib();
+}
+void inicializarJugador(stJugador *player) {
+    //for( i = 0 ; i < DIM ; i++ ) player->flags[i] = 0; ///debemos adaptarlo a la nueva estructura flag
+    player->temporizador = 54000; ///15 min a 60 frames
+    player->escenario = 0;
+}
+void inicializarEscenario(stEscenario *escenario) {
+    inicializarHabitacion(escenario); ///estado 1, escenario index 0
+    inicializarCocina(escenario); ///estado 1, escenario index 0
+    inicializarPatio(escenario); ///estado 1, escenario index 0
+}
+void inicializarHabitacion(stEscenario *escenario, int indexEscenario) {
+    escenario[indexEscenario].fondoEstatico = LoadTexture("habitacion.png");
+    inicializarNodos(escenario);
+    inicializarArbol(escenario);
+    inicializarObjetosHabitacion(escenario);
+}
+void inicializarNodos(stEscenario *escenario) {
+    inicializarEventos(escenario);
+    stEvento bufferEvento;
+
+    bufferEvento.activo = 1;
+    bufferEvento.identificadorEvento = 0;
+    bufferEvento.indiceFlag = 0;
+    char bufferTexto0[] = { "Prueba piloto" };
+    strcpy(bufferEvento.texto, bufferTexto0);
+
+    agregarNodoAFila(&((escenario[1].arbolDelEscenario).fila), bufferEvento);
+    mostrarNodo((escenario[1].arbolDelEscenario).fila.primero);
+
+}
+void inicializarEventos(stEscenario *escenario) {
+    int indiceEscenario; ///bucle que pasa por todos los escenarios inicializandolos
+    for( indiceEscenario = 1 ; indiceEscenario < 4 ; indiceEscenario++ )
+        inicializarEventosDelArbol(escenario, indiceEscenario);
+
+}
+void inicializarEventosDelArbol(stEscenario escenario, int indiceEscenario) {
+
+}
+
+void inicializarArbol(stEscenario *escenario) {
+
+}
+
+void inicializarObjetosHabitacion(stEscenario *escenario) {
+
+    escenario->objetos[0].existe = 1; //Muñeca WHITE
+    escenario->objetos[0].hitbox.x = 1318;
+    escenario->objetos[0].hitbox.y = 313; //el eje y esta invertido
+    escenario->objetos[0].hitbox.width = 125; //el eje y esta invertido
+    escenario->objetos[0].hitbox.height = 355; //el eje y esta invertido
+
+    escenario->objetos[1].existe = 1; //Mecedora parte 1 BLUE
+    escenario->objetos[1].hitbox.x = 700;
+    escenario->objetos[1].hitbox.y = 650;
+    escenario->objetos[1].hitbox.width = 220;
+    escenario->objetos[1].hitbox.height = 215;
+
+    escenario->objetos[2].existe = 1; //Mecedora parte 2 BLUE
+    escenario->objetos[2].hitbox.x = 650;
+    escenario->objetos[2].hitbox.y = 400;
+    escenario->objetos[2].hitbox.width = 140;
+    escenario->objetos[2].hitbox.height = 248;
+
+    escenario->objetos[3].existe = 1; //Armario RED
+    escenario->objetos[3].hitbox.x = 1023;
+    escenario->objetos[3].hitbox.y = 325;
+    escenario->objetos[3].hitbox.width = 73;
+    escenario->objetos[3].hitbox.height = 73;
+
+}
+
+///ACTUALIZAR
+void actualizar(stEscenario *escenario, Debug *herramientaDebug) {
+
+    if( herramientaDebug->mostrarHerramienta == 1 ) {
+        actualizarInputDebug(herramientaDebug);
+        actualizarTestDebug(escenario, herramientaDebug);
+    }
+}
+
+///DIBUJAR
+void dibujar(stEscenario *escenario, Debug *herramientaDebug) {
+    BeginDrawing(); ///inicializa las funciones para dibujar
+
+    ClearBackground(BLACK);
+    DrawTexture(escenario[0].fondoEstatico, 500, 0, WHITE);
+
+    if( herramientaDebug->mostrarHerramienta == 1 ) {
+        dibujarVentanaDebug(herramientaDebug);
+    }
+
+    actualizarTestDebug(escenario, herramientaDebug); //para que no quede atras del escenario
+
+    EndDrawing(); ///cierra las funciones para dibujar
+}
+
+void deinicializaciones() {
+    CloseAudioDevice();
+    CloseWindow();
+}
+
+void agregarNodoAFila(stFila *fila, stEvento evento) {
+    stNodo *nuevoNodo = (stNodo *) malloc(sizeof(stNodo));
+    crearNodo(nuevoNodo, evento);
+
+    if( fila->primero == NULL ) {
+        fila->primero = nuevoNodo;
+        fila->ultimo = nuevoNodo;
+    }
+    else {
+        fila->ultimo->siguiente = nuevoNodo;
+        nuevoNodo->anterior = fila->ultimo;
+        fila->ultimo = nuevoNodo;
+    }
+}
+
+void crearNodo(stNodo *nuevoNodo, stEvento evento) {
+    nuevoNodo->evento = evento;
+    nuevoNodo->anterior = NULL;
+    nuevoNodo->siguiente = NULL;
+}
+
+void mostrarNodo(stNodo *nodo) {
+    printf("\n activo: %i", nodo->evento.activo);
+    printf("\n identificadorEvento: %i", nodo->evento.identificadorEvento);
+    printf("\n indiceFlag: %i", nodo->evento.indiceFlag);
+    printf("\n texto: %s", nodo->evento.texto);
+    printf("\n siguiente: %p", nodo->siguiente);
+    printf("\n anterior: %p", nodo->anterior);
+}
+
+void actualizarTestDebug(stEscenario *escenario, Debug *herramientaDebug) {
+    ///ZONA DE TESTEO DE ACTUALIZACION--------------------------------------
+
+    ///las funciones de dibujado estan en actualizar porque en dibujar no funcionan, teniendo el mismo formato y funciones
+    DrawRectangleLines(escenario[0].objetos[0].hitbox.x, escenario[0].objetos[0].hitbox.y, escenario[0].objetos[0].hitbox.width, escenario[0].objetos[0].hitbox.height, WHITE);
+    DrawRectangleLines(escenario[0].objetos[1].hitbox.x, escenario[0].objetos[1].hitbox.y, escenario[0].objetos[1].hitbox.width, escenario[0].objetos[1].hitbox.height, BLUE);
+    DrawRectangleLines(escenario[0].objetos[2].hitbox.x, escenario[0].objetos[2].hitbox.y, escenario[0].objetos[2].hitbox.width, escenario[0].objetos[2].hitbox.height, BLUE);
+    DrawRectangleLines(escenario[0].objetos[3].hitbox.x, escenario[0].objetos[3].hitbox.y, escenario[0].objetos[3].hitbox.width, escenario[0].objetos[3].hitbox.height, GREEN);
+
+    ///DrawRectangleLines(herramientaDebug->valorVariable[1] * 100, herramientaDebug->valorVariable[2] * 100, herramientaDebug->valorVariable[3] * 100, herramientaDebug->valorVariable[4] * 100, WHITE);
+
+    ///----------------------------------------------------------------
+}
+
+/* NO ESTA FUNCIONANDO DRAW CUANDO UTILIZAMOS ESTA FUNCION, PROBLEMA DEL COMPILADOR?
+void dibujarTestDebug(stEscenario *escenario, Debug *herramientaDebug) {
+    ///ZONA DE TESTEO DE DIBUJO----------------------------------------
+
+    dibujarHitboxDebug(escenario, herramientaDebug);
+
+    ///----------------------------------------------------------------
+}
+
+void dibujarHitboxDebug(stEscenario *escenario, Debug *herramientaDebug) {
+
+}
+*/
+///Ortiz Rocio, Ortiz Brisa, Olmos Fernando
+///TP Programacion y Laboratorio 2, UTN Mar Del Plata 2023
